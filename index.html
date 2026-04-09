@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cajasan - Control de Equipos</title>
+    
+    <!-- Tailwind CSS para los estilos rápidos y modernos -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome para los íconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body class="bg-slate-50 font-sans text-slate-900 h-screen flex overflow-hidden">
+
+    <!-- ==========================================
+         SIDEBAR (Barra Lateral de Navegación)
+         ========================================== -->
+    <aside class="w-64 bg-[#0B1A28] text-white flex flex-col shadow-xl z-10">
+        <div class="p-6 border-b border-slate-800">
+            <h1 class="text-2xl font-black tracking-tight text-blue-400">CAJASAN</h1>
+            <p class="text-xs text-slate-400 uppercase tracking-widest mt-1">Control Campers</p>
+        </div>
+        <nav class="flex-1 p-4 space-y-1" id="nav-menu">
+            <button onclick="navegar('dashboard')" class="nav-btn active w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 bg-blue-600 text-white font-bold" data-target="dashboard">
+                <i class="fa-solid fa-desktop w-5"></i> <span>Panel General</span>
+            </button>
+            <button onclick="navegar('asignar')" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 text-slate-400 hover:bg-slate-800 hover:text-white font-medium" data-target="asignar">
+                <i class="fa-solid fa-right-left w-5"></i> <span>Auditoría y Préstamo</span>
+            </button>
+            
+            <div class="pt-4 pb-2"><p class="text-xs font-bold text-slate-500 uppercase px-4">Administración</p></div>
+            
+            <button onclick="navegar('reg_camper')" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 text-slate-400 hover:bg-slate-800 hover:text-white font-medium" data-target="reg_camper">
+                <i class="fa-solid fa-user-plus w-5"></i> <span>Nuevo Camper</span>
+            </button>
+            <button onclick="navegar('reg_pc')" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 text-slate-400 hover:bg-slate-800 hover:text-white font-medium" data-target="reg_pc">
+                <i class="fa-solid fa-laptop w-5"></i> <span>Nuevo PC</span>
+            </button>
+        </nav>
+    </aside>
+
+    <!-- ==========================================
+         ÁREA DE CONTENIDO PRINCIPAL
+         ========================================== -->
+    <main class="flex-1 flex flex-col overflow-hidden">
+        
+        <!-- Header -->
+        <header class="bg-white h-16 border-b border-slate-200 flex items-center px-8 justify-between shadow-sm z-0">
+            <h2 id="header-title" class="text-xl font-bold text-slate-800">Panel General de Equipos</h2>
+            <div class="flex items-center text-sm font-medium text-amber-600 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
+                <span class="w-2 h-2 rounded-full bg-amber-500 mr-2 animate-pulse"></span> Modo Prototipo (JS Puro)
+            </div>
+        </header>
+
+        <!-- Contenedor de Vistas -->
+        <div class="flex-1 overflow-y-auto p-8 relative">
+
+            <!-- VISTA 1: DASHBOARD -->
+            <div id="view-dashboard" class="view-section fade-in space-y-6">
+                <!-- Tarjetas de Estadísticas -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-blue-50 p-6 rounded-xl border border-blue-100 shadow-sm">
+                        <h3 class="text-blue-800 text-sm font-bold uppercase tracking-wider">Total Equipos</h3>
+                        <p id="stat-total" class="text-blue-900 text-4xl font-black mt-2">0</p>
+                    </div>
+                    <div class="bg-emerald-50 p-6 rounded-xl border border-emerald-100 shadow-sm">
+                        <h3 class="text-emerald-800 text-sm font-bold uppercase tracking-wider">En Uso</h3>
+                        <p id="stat-uso" class="text-emerald-900 text-4xl font-black mt-2">0</p>
+                    </div>
+                    <div class="bg-rose-50 p-6 rounded-xl border border-rose-100 shadow-sm">
+                        <h3 class="text-rose-800 text-sm font-bold uppercase tracking-wider">Con Novedades</h3>
+                        <p id="stat-novedad" class="text-rose-900 text-4xl font-black mt-2">0</p>
+                    </div>
+                </div>
+
+                <h3 class="text-xl font-bold text-slate-800 mt-8 mb-4 border-b pb-2">Mapa de la Sala</h3>
+                
+                <!-- Grid donde se inyectan los PCs mediante JS -->
+                <div id="pc-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Contenido dinámico -->
+                </div>
+            </div>
+
+            <!-- VISTA 2: ASIGNAR / LIBERAR (AUDITORÍA) -->
+            <div id="view-asignar" class="view-section hidden-view fade-in max-w-2xl mx-auto">
+                
+                <!-- Sub-menú Asignar/Liberar -->
+                <div class="flex space-x-2 mb-8 p-1 bg-slate-200 rounded-lg">
+                    <button onclick="toggleSubModo('form-asignar', 'btn-asignar')" id="btn-asignar" class="flex-1 py-2 font-bold rounded-md transition bg-white shadow text-blue-700">1. Entregar Equipo</button>
+                    <button onclick="toggleSubModo('form-liberar', 'btn-liberar')" id="btn-liberar" class="flex-1 py-2 font-bold rounded-md transition text-slate-500 hover:text-slate-700">2. Recibir y Auditar</button>
+                </div>
+
+                <!-- Formulario: Asignar Equipo -->
+                <form id="form-asignar" onsubmit="asignarEquipo(event)" class="bg-white p-8 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="text-lg font-bold text-slate-800 mb-4">Responsabilizar Camper</h3>
+                    <div class="space-y-4">
+                        <select id="select-pc-disponible" required class="w-full p-3 border border-slate-300 rounded bg-white outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                            <!-- Opciones dinámicas -->
+                        </select>
+                        <select id="select-camper-asignar" required class="w-full p-3 border border-slate-300 rounded bg-white outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                            <!-- Opciones dinámicas -->
+                        </select>
+                        <div class="bg-amber-50 p-4 rounded text-sm text-amber-800 border border-amber-200 flex items-start">
+                            <i class="fa-solid fa-triangle-exclamation mr-2 flex-shrink-0 mt-0.5 text-lg"></i>
+                            <p>Al confirmar, el camper será responsable de la <strong>USB del teclado y mouse</strong> de este equipo.</p>
+                        </div>
+                        <button type="submit" class="w-full bg-blue-600 text-white font-bold py-3 rounded hover:bg-blue-700 transition">Asignar Equipo</button>
+                    </div>
+                </form>
+
+                <!-- Formulario: Liberar y Auditar Equipo -->
+                <form id="form-liberar" onsubmit="liberarEquipo(event)" class="bg-white p-8 rounded-xl shadow-sm border border-slate-200 hidden-view">
+                    <h3 class="text-lg font-bold text-slate-800 mb-4">Auditoría de Devolución</h3>
+                    <div class="space-y-5">
+                        <select id="select-pc-uso" required onchange="validarSeleccionLiberar()" class="w-full p-3 border border-slate-300 rounded bg-white outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                            <!-- Opciones dinámicas -->
+                        </select>
+
+                        <div id="auditoria-box" class="bg-slate-50 p-5 rounded-lg border border-slate-200 space-y-4 opacity-50 pointer-events-none transition-opacity">
+                            <h4 class="font-bold text-slate-700">Verificación Física y Lógica</h4>
+                            
+                            <label class="flex items-center space-x-3 cursor-pointer">
+                                <input type="checkbox" id="check-usb" checked onchange="evaluarNovedad()" class="w-6 h-6 text-blue-600 rounded focus:ring-blue-500">
+                                <span id="label-usb" class="text-slate-700">La USB y los periféricos están completos en el puesto.</span>
+                            </label>
+                            
+                            <label class="flex items-center space-x-3 cursor-pointer">
+                                <input type="checkbox" id="check-soft" checked onchange="evaluarNovedad()" class="w-6 h-6 text-blue-600 rounded focus:ring-blue-500">
+                                <span id="label-soft" class="text-slate-700">Los programas funcionaron correctamente (Sin fallas).</span>
+                            </label>
+
+                            <!-- Caja de texto para novedad, oculta por defecto -->
+                            <div id="box-novedad" class="pt-3 hidden-view">
+                                <label class="block text-sm font-bold text-rose-600 mb-2">Describa el daño o pérdida (Obligatorio)</label>
+                                <textarea id="txt-novedad" placeholder="Ej. Falta la USB del mouse..." class="w-full p-3 border border-rose-300 rounded outline-none focus:ring-2 focus:ring-rose-500" rows="3"></textarea>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" id="btn-submit-liberar" disabled class="w-full font-bold py-3 rounded transition bg-slate-200 text-slate-400 cursor-not-allowed">
+                            Seleccione un PC primero
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+
+            <!-- VISTA 3: REGISTRO CAMPER -->
+            <div id="view-reg_camper" class="view-section hidden-view fade-in max-w-md mx-auto bg-white p-8 rounded-xl shadow-sm border border-slate-200">
+                <h3 class="text-xl font-bold text-slate-800 mb-6 flex items-center"><i class="fa-solid fa-user-plus mr-2 text-blue-600"></i> Añadir Camper</h3>
+                <form onsubmit="registrarCamper(event)" class="space-y-4">
+                    <input type="text" id="camper-doc" required class="w-full p-3 border border-slate-300 rounded focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Documento de Identidad">
+                    <input type="text" id="camper-nombre" required class="w-full p-3 border border-slate-300 rounded focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Nombre Completo">
+                    <button type="submit" class="w-full bg-blue-600 text-white font-bold py-3 rounded hover:bg-blue-700 transition flex justify-center items-center">
+                        <i class="fa-solid fa-floppy-disk mr-2"></i> Guardar Camper
+                    </button>
+                </form>
+            </div>
+
+            <!-- VISTA 4: REGISTRO COMPUTADOR -->
+            <div id="view-reg_pc" class="view-section hidden-view fade-in max-w-md mx-auto bg-white p-8 rounded-xl shadow-sm border border-slate-200">
+                <h3 class="text-xl font-bold text-slate-800 mb-6 flex items-center"><i class="fa-solid fa-laptop mr-2 text-blue-600"></i> Añadir Computador</h3>
+                <form onsubmit="registrarPC(event)" class="space-y-4">
+                    <input type="text" id="pc-id" required class="w-full p-3 border border-slate-300 rounded focus:ring-2 focus:ring-blue-500 outline-none uppercase" placeholder="ID del Equipo (Ej. PC-15)">
+                    <input type="text" id="pc-fila" required class="w-full p-3 border border-slate-300 rounded focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Número de Fila">
+                    <button type="submit" class="w-full bg-blue-600 text-white font-bold py-3 rounded hover:bg-blue-700 transition flex justify-center items-center">
+                        <i class="fa-solid fa-floppy-disk mr-2"></i> Guardar PC
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+</body>
+<script src="./script.js"></script>
+</html>

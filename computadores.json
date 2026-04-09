@@ -1,0 +1,9 @@
+{
+    "1": {
+        "fila": "1",
+        "en_uso": false,
+        "usuario_actual": null,
+        "estado": "Operativo",
+        "historial_fallas": []
+    }
+}
